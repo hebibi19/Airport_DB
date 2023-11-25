@@ -1,0 +1,72 @@
+-- A. model_experts(): a function that returns the number of technicians 
+-- who expert in a given model
+
+CREATE FUNCTION model_experts(text) RETURNS int4 AS '
+	DECLARE 
+		modelno ALIAS FOR $1;
+		technicianCount int4 := 0;
+		row_data Expert_On%ROWTYPE;
+	BEGIN
+		FOR row_data IN SELECT * FROM Expert_On WHERE model_no = modelno
+		LOOP
+		technicianCount := technicianCount + 1;
+		END LOOP;
+		RETURN technicianCount;
+	END;
+'LANGUAGE 'plpgsql';
+
+
+-- Testing to make sure the function works
+-- RR should return 3, OF should return 3, JE should return 2
+
+-- select * from Expert_On;
+-- select * from model_experts('RR-582');
+-- select * from model_experts('OF-747');
+-- select * from model_experts('JE-612');
+
+
+
+-- B. Airplane_tests(): a function that returns the technicians who 
+-- tests the given airplane
+
+CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
+	DECLARE 
+		reg_no ALIAS FOR $1;
+		techRow Technician%ROWTYPE;
+	BEGIN
+		FOR techRow IN SELECT * FROM technician WHERE
+			ssn IN (select ssn from Airplane_Test where registration_no = reg_no)
+		LOOP
+			RETURN NEXT techRow;
+		END LOOP;
+		RETURN;
+	END;
+'LANGUAGE 'plpgsql';
+
+
+-- Testing the function
+
+-- select * from Airplane_Test;
+-- select * from Airplane_Tests('JUJ1923');
+-- select * from Airplane_Tests('RWR1432');
+-- select * from Airplane_Tests('LKLK1411');
+
+
+
+-- C. remove_model: a trigger to delete a model  
+-- if there is no airplane in that model.
+
+
+
+
+
+-- D. test_restrict: a trigger to ensure that a technician 
+-- tests no more than 3 airplanes.
+
+
+
+
+
+
+
+
