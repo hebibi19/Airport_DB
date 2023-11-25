@@ -56,7 +56,8 @@ CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
 -- C. remove_model: a trigger to delete a model  
 -- if there is no airplane in that model.
 
--- ON ??
+-- ON ?? idk if its before/after on insert/update/delete
+-- need help w this one
 
 
 
@@ -65,7 +66,7 @@ CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
 -- D. test_restrict: a trigger to ensure that a technician 
 -- tests no more than 3 airplanes.
 
--- ON INSERT/UPDATE
+-- i know this is going to be BEFORE INSERT/UPDATE
 
 
 
