@@ -1,0 +1,137 @@
+CREATE TABLE Model (
+	model_no varchar(50) PRIMARY KEY,
+	capacity int,
+	weight int
+);
+
+CREATE TABLE Traffic_Controller (
+	SSN varchar(25) PRIMARY KEY,
+	union_id int NOT NULL,
+	last_exam date NOT NULL
+);
+
+CREATE TABLE Technician (
+ 	SSN varchar(25) PRIMARY KEY,
+ 	union_id int NOT NULL,
+ 	fname varchar(50),
+ 	lname varchar(50),
+ 	address varchar(50),
+ 	phone varchar(20),
+ 	salary varchar(20)
+);
+
+CREATE TABLE Expert_On (
+	SSN varchar(25) NOT NULL,
+	model_no varchar(50) NOT NULL,
+	FOREIGN KEY (SSN) REFERENCES Technician (SSN),
+	FOREIGN KEY (model_no) REFERENCES Model (model_no)
+);
+
+CREATE TABLE Airplane (
+	registration_no varchar(50) PRIMARY KEY,
+	model_no varchar(50) NOT NULL,
+	FOREIGN KEY (model_no) REFERENCES Model(model_no)
+);
+
+CREATE TABLE Airplane_Test (
+	registration_no varchar(50) NOT NULL,
+	SSN varchar(25) NOT NULL,
+	test_date date NOT NULL,
+	hours int NOT NULL,
+	score int NOT NULL,
+	FOREIGN KEY (SSN) REFERENCES Technician (SSN)
+);
+
+-- UNCOVER THESE (below) ONE AT A TIME AND MAKE SURE 
+-- THAT THEY'RE BEING ADDED CORRECTLY
+
+INSERT INTO Model VAlUES('OF-747', 605, 412000);
+INSERT INTO Model VAlUES('ME-380', 853, 672000);
+INSERT INTO Model VAlUES('RR-582', 392, 438000);
+INSERT INTO Model VAlUES('DE-285', 581, 589000);
+INSERT INTO Model VAlUES('JE-612', 910, 832000);
+INSERT INTO Model VAlUES('EE-854', 200, 329000);
+INSERT INTO Model VAlUES('JE-467', 322, 468000);
+INSERT INTO Model VAlUES('CH-183', 812, 829000);
+
+SELECT * FROM Model;
+
+INSERT INTO Traffic_Controller VAlUES('432-12-3242', 32, '2022-03-15');
+INSERT INTO Traffic_Controller VAlUES('184-12-3412', 32, '2023-10-08');
+INSERT INTO Traffic_Controller VAlUES('420-12-3414', 16, '2020-08-24');
+INSERT INTO Traffic_Controller VAlUES('832-12-2452', 26, '2023-06-23');
+INSERT INTO Traffic_Controller VAlUES('124-72-1234', 13, '2019-02-02');
+
+SELECT * FROM Traffic_Controller;
+
+INSERT INTO Technician VALUES('512-13-1232', 16, 'Tom', 'Smith', '556 Eagle St', '432-123-1244', '120,000');
+INSERT INTO Technician VALUES('142-12-5432', 11, 'Jane', 'Doe', '182 Hill Ave', '433-182-1431', '135,000');
+INSERT INTO Technician VALUES('124-23-1245', 20, 'Rachel', 'Blake', '322 Paper St', '121-532-1245', '124,000');
+INSERT INTO Technician VALUES('821-34-1245', 15, 'Clary', 'Fray', '811 Bell Rd', '533-124-1253', '160,000');
+INSERT INTO Technician VALUES('153-12-5421', 32, 'Simon', 'Smith', '122 Grean St', '111-543-1212', '120,000');
+INSERT INTO Technician VALUES('918-18-5721', 11, 'Lucy', 'Gray', '744 Round Ave', '121-143-1823', '126,000');
+INSERT INTO Technician VALUES('182-53-1122', 28, 'Remus', 'Lupin', '128 Maple Ave', '828-122-2222', '145,000');
+INSERT INTO Technician VALUES('192-66-1246', 15, 'Dean', 'West', '199 Elm Rd', '747-124-1555', '130,000');
+INSERT INTO Technician VALUES('111-55-2355', 22, 'Sophie', 'Foster', '125 Main St', '818-232-5444', '140,000');
+INSERT INTO Technician VALUES('123-45-6789', 13, 'James', 'Tyler', '111 Round St', '223-124-8765', '120,000');
+INSERT INTO Technician VALUES('458-11-8554', 16, 'Clara', 'Oswald', '732 Oak Ave', '322-123-6543', '135,000');
+
+SELECT * FROM Technician;
+
+INSERT INTO Expert_On VALUES('142-12-5432', 'RR-582');
+INSERT INTO Expert_On VALUES('821-34-1245', 'RR-582');
+INSERT INTO Expert_On VALUES('142-12-5432', 'JE-612');
+INSERT INTO Expert_On VALUES('182-53-1122', 'OF-747');
+INSERT INTO Expert_On VALUES('153-12-5421', 'JE-467');
+INSERT INTO Expert_On VALUES('142-12-5432', 'DE-285');
+INSERT INTO Expert_On VALUES('821-34-1245', 'DE-285');
+INSERT INTO Expert_On VALUES('111-55-2355', 'OF-747');
+INSERT INTO Expert_On VALUES('153-12-5421', 'OF-747');
+INSERT INTO Expert_On VALUES('512-13-1232', 'JE-467');
+INSERT INTO Expert_On VALUES('123-45-6789', 'JE-612');
+INSERT INTO Expert_On VALUES('918-18-5721', 'RR-582');
+INSERT INTO Expert_On VALUES('182-53-1122', 'DE-285');
+
+SELECT * FROM Expert_On;
+
+INSERT INTO Airplane VALUES('RWR1432', 'OF-747');
+INSERT INTO Airplane VALUES('JUJ1923', 'OF-747');
+INSERT INTO Airplane VALUES('LWLW1282', 'RR-582');
+INSERT INTO Airplane VALUES('OWOW1888', 'RR-582');
+INSERT INTO Airplane VALUES('PLPL7677', 'RR-582');
+INSERT INTO Airplane VALUES('KYKY1212', 'DE-285');
+INSERT INTO Airplane VALUES('PTPT3432', 'DE-285');
+INSERT INTO Airplane VALUES('VWVW5322', 'DE-285');
+INSERT INTO Airplane VALUES('LKLK1411', 'JE-612');
+
+Select * FROM Airplane;
+
+INSERT INTO Airplane_Test VALUES('RWR1432', '142-12-5432', '2023-10-19', 12, 85 );
+INSERT INTO Airplane_Test VALUES('KYKY1212', '142-12-5432', '2023-08-24', 10, 90 );
+INSERT INTO Airplane_Test VALUES('OWOW1888', '142-12-5432', '2023-03-03', 15, 65 );
+INSERT INTO Airplane_Test VALUES('RWR1432', '918-18-5721', '2023-04-29', 13, 90 );
+INSERT INTO Airplane_Test VALUES('PLPL7677', '918-18-5721', '2023-05-05', 13, 65 );
+INSERT INTO Airplane_Test VALUES('RWR1432', '192-66-1246', '2023-07-21', 14, 95 );
+INSERT INTO Airplane_Test VALUES('PLPL7677', '192-66-1246', '2023-01-30', 15, 95 );
+INSERT INTO Airplane_Test VALUES('JUJ1923', '458-11-8554', '2023-03-14', 15, 40 );
+INSERT INTO Airplane_Test VALUES('PTPT3432', '458-11-8554', '2023-07-11', 10, 50 );
+INSERT INTO Airplane_Test VALUES('KYKY1212', '512-13-1232', '2023-04-24', 11, 90 );
+INSERT INTO Airplane_Test VALUES('OWOW1888', '512-13-1232', '2023-11-20', 15, 95 );
+INSERT INTO Airplane_Test VALUES('LWLW1282', '512-13-1232', '2023-06-25', 10, 80 );
+INSERT INTO Airplane_Test VALUES('OWOW1888', '111-55-2355', '2023-03-03', 13, 70 );
+INSERT INTO Airplane_Test VALUES('VWVW5322', '111-55-2355', '2023-02-28', 14, 80 );
+INSERT INTO Airplane_Test VALUES('VWVW5322', '821-34-1245', '2023-11-15', 15, 90 );
+INSERT INTO Airplane_Test VALUES('LKLK1411', '821-34-1245', '2023-09-28', 15, 85 );
+INSERT INTO Airplane_Test VALUES('LKLK1411', '182-53-1122', '2023-01-15', 14, 50 );
+INSERT INTO Airplane_Test VALUES('VWVW5322', '182-53-1122', '2023-10-02', 13, 75 );
+
+SELECT * FROM Airplane_Test;
+
+
+
+
+
+
+
+
+
