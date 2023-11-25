@@ -56,12 +56,16 @@ CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
 -- C. remove_model: a trigger to delete a model  
 -- if there is no airplane in that model.
 
+-- ON ??
+
 
 
 
 
 -- D. test_restrict: a trigger to ensure that a technician 
 -- tests no more than 3 airplanes.
+
+-- ON INSERT/UPDATE
 
 
 
