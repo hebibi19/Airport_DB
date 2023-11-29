@@ -1,0 +1,11 @@
+CREATE TRIGGER remove_model
+AFTER DELETE ON Airplane
+FOR EACH ROW
+EXECUTE PROCEDURE remove_model_if_no_airplanes();
+
+
+CREATE TRIGGER test_restrict
+BEFORE INSERT OR UPDATE ON Test
+FOR EACH ROW
+EXECUTE PROCEDURE restrict_technician_tests();
+

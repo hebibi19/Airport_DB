@@ -29,13 +29,13 @@ CREATE FUNCTION model_experts(text) RETURNS int4 AS '
 -- B. Airplane_tests(): a function that returns the technicians who 
 -- tests the given airplane
 
-CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
+CREATE OR REPLACE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
 	DECLARE 
 		reg_no ALIAS FOR $1;
 		techRow Technician%ROWTYPE;
 	BEGIN
 		FOR techRow IN SELECT * FROM technician WHERE
-			ssn IN (select ssn from Airplane_Test where registration_no = reg_no)
+			ssn IN (select ssn from Airplane where registration_no = reg_no)
 		LOOP
 			RETURN NEXT techRow;
 		END LOOP;
@@ -56,20 +56,36 @@ CREATE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
 -- C. remove_model: a trigger to delete a model  
 -- if there is no airplane in that model.
 
--- ON ?? idk if its before/after on insert/update/delete
--- need help w this one
+CREATE OR REPLACE FUNCTION remove_model_if_no_airplanes() RETURNS TRIGGER AS '
+BEGIN
+   IF NOT EXISTS (SELECT 1 FROM Airplane WHERE model_no = OLD.model_no) THEN
+      DELETE FROM Model WHERE model_no = OLD.model_no;
+   END IF;
+   RETURN NULL;
+END;
+' LANGUAGE plpgsql;
+
+
+-- TESTING the function
+
+-- DELETE FROM Airplane WHERE registration_no = 'RWR1432';
 
 
 
 
 
--- D. test_restrict: a trigger to ensure that a technician 
--- tests no more than 3 airplanes.
+-- D. test_res airplanes.
 
 -- i know this is going to be BEFORE INSERT/UPDATE
 
-
-
+CREATE OR REPLACE FUNCTION restrict_technician_tests() RETURNS TRIGGER AS '
+BEGIN
+   IF (SELECT COUNT(*) FROM Test WHERE SSN = NEW.SSN) >= 3 THEN
+      RAISE EXCEPTION ''A technician can test no more than 3 airplanes.'';
+   END IF;
+   RETURN NEW;
+END;
+' LANGUAGE plpgsql;
 
 
 
