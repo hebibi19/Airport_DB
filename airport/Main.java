@@ -10,9 +10,9 @@ public class Main {
 	
 	// i literally cannot figure out how to connect to the database im :sobbing:
 	
-	static final String DB_URL = "jdbc:postgresql://cs1.calstatela.edu/cs4222f23hp39";
-	static final String USER = "cs4222f23hp39";
-	static final String PASS = "rW2MPLBR";
+	static final String DB_URL = "jdbc:postgresql://cs1.calstatela.edu:5432/";
+	static final String USER = "---";
+	static final String PASS = "---";
 
 	public static void main(String[] args) {
 		
