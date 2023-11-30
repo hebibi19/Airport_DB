@@ -1,93 +1,107 @@
--- A. model_experts(): a function that returns the number of technicians 
--- who expert in a given model
+-- -- A. model_experts(): a function that returns the number of technicians 
+-- -- who expert in a given model
 
-CREATE FUNCTION model_experts(text) RETURNS int4 AS '
-	DECLARE 
-		modelno ALIAS FOR $1;
-		technicianCount int4 := 0;
-		row_data Expert_On%ROWTYPE;
-	BEGIN
-		FOR row_data IN SELECT * FROM Expert_On WHERE model_no = modelno
-		LOOP
-		technicianCount := technicianCount + 1;
-		END LOOP;
-		RETURN technicianCount;
-	END;
-'LANGUAGE 'plpgsql';
-
-
--- Testing to make sure the function works
--- RR should return 3, OF should return 3, JE should return 2
-
--- select * from Expert_On;
--- select * from model_experts('RR-582');
--- select * from model_experts('OF-747');
--- select * from model_experts('JE-612');
+-- CREATE FUNCTION model_experts(text) RETURNS int4 AS '
+-- 	DECLARE 
+-- 		modelno ALIAS FOR $1;
+-- 		technicianCount int4 := 0;
+-- 		row_data Expert_On%ROWTYPE;
+-- 	BEGIN
+-- 		FOR row_data IN SELECT * FROM Expert_On WHERE model_no = modelno
+-- 		LOOP
+-- 		technicianCount := technicianCount + 1;
+-- 		END LOOP;
+-- 		RETURN technicianCount;
+-- 	END;
+-- 'LANGUAGE 'plpgsql';
 
 
+-- -- Testing to make sure the function works
+-- -- RR should return 3, OF should return 3, JE should return 2
 
--- B. Airplane_tests(): a function that returns the technicians who 
--- tests the given airplane
-
-CREATE OR REPLACE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
-	DECLARE 
-		reg_no ALIAS FOR $1;
-		techRow Technician%ROWTYPE;
-	BEGIN
-		FOR techRow IN SELECT * FROM technician WHERE
-			ssn IN (select ssn from Airplane where registration_no = reg_no)
-		LOOP
-			RETURN NEXT techRow;
-		END LOOP;
-		RETURN;
-	END;
-'LANGUAGE 'plpgsql';
-
-
--- Testing the function
-
--- select * from Airplane_Test;
--- select * from Airplane_Tests('JUJ1923');
--- select * from Airplane_Tests('RWR1432');
--- select * from Airplane_Tests('LKLK1411');
+-- -- select * from Expert_On;
+-- -- select * from model_experts('RR-582');
+-- -- select * from model_experts('OF-747');
+-- -- select * from model_experts('JE-612');
 
 
 
--- C. remove_model: a trigger to delete a model  
--- if there is no airplane in that model.
+-- -- B. Airplane_tests(): a function that returns the technicians who 
+-- -- tests the given airplane
 
-CREATE OR REPLACE FUNCTION remove_model_if_no_airplanes() RETURNS TRIGGER AS '
-BEGIN
-   IF NOT EXISTS (SELECT 1 FROM Airplane WHERE model_no = OLD.model_no) THEN
-      DELETE FROM Model WHERE model_no = OLD.model_no;
-   END IF;
-   RETURN NULL;
-END;
-' LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION Airplane_tests(text) RETURNS SETOF Technician AS '
+-- 	DECLARE 
+-- 		reg_no ALIAS FOR $1;
+-- 		techRow Technician%ROWTYPE;
+-- 	BEGIN
+-- 		FOR techRow IN SELECT * FROM technician WHERE
+-- 			ssn IN (select ssn from Airplane where registration_no = reg_no)
+-- 		LOOP
+-- 			RETURN NEXT techRow;
+-- 		END LOOP;
+-- 		RETURN;
+-- 	END;
+-- 'LANGUAGE 'plpgsql';
 
 
--- TESTING the function
+-- -- Testing the function
+
+-- -- select * from Airplane_Test;
+-- -- select * from Airplane_Tests('JUJ1923');
+-- -- select * from Airplane_Tests('RWR1432');
+-- -- select * from Airplane_Tests('LKLK1411');
+
+
+
+-- -- C. remove_model: a trigger to delete a model  
+-- -- if there is no airplane in that model.
+
+-- CREATE OR REPLACE FUNCTION remove_model() RETURNS TRIGGER AS '
+-- BEGIN
+--    IF NOT EXISTS (SELECT 1 FROM Airplane WHERE model_no = OLD.model_no) THEN
+--       DELETE FROM Model WHERE model_no = OLD.model_no;
+--    END IF;
+--    RETURN NULL;
+-- END;
+-- ' LANGUAGE plpgsql;
+
+
+-- -- TESTING the function
 
 -- DELETE FROM Airplane WHERE registration_no = 'RWR1432';
+-- select * from model;
+
+-- INSERT INTO Model VAlUES('OF-747', 605, 412000);
+-- INSERT INTO Expert_On VALUES('182-53-1122', 'OF-747');
+-- INSERT INTO Expert_On VALUES('111-55-2355', 'OF-747');
+-- INSERT INTO Expert_On VALUES('153-12-5421', 'OF-747');
+-- INSERT INTO Airplane VALUES('RWR1432', 'OF-747');
 
 
 
+-- -- D. test_res airplanes.
+-- CREATE OR REPLACE FUNCTION test_restrict() RETURNS TRIGGER AS '
+-- BEGIN
+--    IF (SELECT COUNT(*) FROM Test WHERE SSN = NEW.SSN) >= 3 THEN
+--       RAISE EXCEPTION ''A technician can test no more than 3 airplanes.'';
+-- 	  RETURN NULL;
+--    END IF;
+--    RETURN NEW;
+-- END;
+-- ' LANGUAGE plpgsql;
 
 
--- D. test_res airplanes.
-
--- i know this is going to be BEFORE INSERT/UPDATE
-
-CREATE OR REPLACE FUNCTION restrict_technician_tests() RETURNS TRIGGER AS '
-BEGIN
-   IF (SELECT COUNT(*) FROM Test WHERE SSN = NEW.SSN) >= 3 THEN
-      RAISE EXCEPTION ''A technician can test no more than 3 airplanes.'';
-   END IF;
-   RETURN NEW;
-END;
-' LANGUAGE plpgsql;
+-- CREATE TRIGGER remove_model
+-- AFTER DELETE ON Airplane
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE remove_model();
 
 
+
+-- CREATE TRIGGER test_restrict
+-- BEFORE INSERT OR UPDATE ON Test
+-- FOR EACH ROW
+-- EXECUTE PROCEDURE test_restrict();
 
 
 
