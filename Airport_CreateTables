@@ -39,7 +39,8 @@ CREATE TABLE Test (
 	test_date date NOT NULL,
 	hours int NOT NULL,
 	score int NOT NULL,
-	FOREIGN KEY (SSN) REFERENCES Technician (SSN)
+	FOREIGN KEY (SSN) REFERENCES Technician (SSN),
+	FOREIGN KEY (registration_no) REFERENCES Airplane(registration_no)
 );
 
 -- UNCOVER THESE (below) ONE AT A TIME AND MAKE SURE 
