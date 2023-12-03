@@ -11,9 +11,9 @@ import java.util.Scanner;
 public class Main {
 	
 	// change this to your info
-	static final String DB_URL = "jdbc:postgresql://cs1.calstatela.edu/cs4222f23hp39"; // your user here
-	static final String USER = "cs4222f23hp39"; // your user here
-	static final String PASS = "rW2MPLBR"; // your password here
+	static final String DB_URL = "jdbc:postgresql://cs1.calstatela.edu/[database]"; // your user here
+	static final String USER = "[user]"; // your user here
+	static final String PASS = "[password]"; // your password here
 	
 	
 	static final String DisplayAirplanes = "SELECT * FROM Airplane";
