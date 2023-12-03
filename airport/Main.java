@@ -40,9 +40,45 @@ public class Main {
 	}
 	
 	
+	/*
+	 * Method adds a new airplane to the AIRPLANE table 
+	 */
 	public static void addPlane(Statement stmt) {
-		
-		
+	    try {
+	        Scanner input = new Scanner(System.in);
+
+	        // displaying models
+	        ResultSet rs = stmt.executeQuery(DisplayModels);
+
+	        HashMap<Integer, String> h = new HashMap<>();
+	        int count = 1;
+
+	        System.out.println("Select a model for the airplane: \n");
+	        while (rs.next()) {
+	            System.out.println("[" + count + "] model number: " + rs.getString("model_no"));
+	            h.put(count, rs.getString("model_no"));
+	            count++;
+	        }
+
+	        int choice = input.nextInt();
+	        String model_no = h.get(choice);
+
+	        // prompts menu
+	        System.out.println("Enter a new registration number for the airplane: \n");
+	        String registration_no = input.next();
+
+	      
+	        String addPlane = "INSERT INTO Airplane (registration_no, model_no) VALUES ('" + registration_no + "', '" + model_no + "')";
+	        stmt.executeUpdate(addPlane);
+
+	        System.out.println("Airplane with model number: " + model_no + " and registration number: " + registration_no + " was added \n");
+
+	        // Call the initial menu again
+	        initialMenu(stmt);
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	/**
@@ -98,7 +134,60 @@ public class Main {
 	}
 	
 	public static void addTest(Statement stmt) {
-		
+	    try {
+	        Scanner input = new Scanner(System.in);
+	        ResultSet rs = stmt.executeQuery(DisplayAirplanes);
+	        HashMap<Integer, String> h = new HashMap<>();
+	        int count = 1;
+
+	        System.out.println("Select the airplane for the new test: \n");
+	        while (rs.next()) {
+	            System.out.println("[" + count + "] Registration Number: " + rs.getString("registration_no"));
+	            h.put(count, rs.getString("registration_no"));
+	            count++;
+	        }
+	        int choice = input.nextInt();
+	        String registration_no = h.get(choice);
+
+	        // query to display all technicians who have tested less than 3 airplanes
+	        ResultSet rs2 = stmt.executeQuery("SELECT SSN FROM Technician WHERE SSN NOT IN (SELECT SSN FROM Test GROUP BY SSN HAVING COUNT(*) >= 3)");
+	        HashMap<Integer, String> h2 = new HashMap<>();
+	        count = 1;
+
+	        // shows list of technicians to select 
+	        System.out.println("Please select the technician for the new test: \n");
+	        while (rs2.next()) {
+	            System.out.println("[" + count + "] SSN: " + rs2.getString("SSN"));
+	            h2.put(count, rs2.getString("SSN"));
+	            count++;
+	        }
+
+	        choice = input.nextInt();
+	        String SSN = h2.get(choice);
+
+	        System.out.println("Enter the test date (YYYY-MM-DD): \n");
+	        String test_date = input.next();
+
+	
+	        System.out.println("Enter number of hours: \n");
+	        int hours = input.nextInt();
+
+	        System.out.println("Enter the score: \n");
+	        int score = input.nextInt();
+
+	        // query to insert the new test into the TEST table
+	        String addTest = "INSERT INTO Test (registration_no, SSN, test_date, hours, score) VALUES ('" + registration_no + "', '" + SSN + "', '" + test_date + "', " + hours + ", " + score + ")";
+	        stmt.executeUpdate(addTest);
+
+
+			//success
+	        System.out.println("Test for airplane with registration number " + registration_no + " was added.");
+
+	        initialMenu(stmt);
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	public static void removeTest(Statement stmt) {
